@@ -98,13 +98,24 @@ function autoMove(card){
 }
 
 function removeCard(card){
-  for(let pile of [...state.tableau,state.waste]){
-    let index=pile.indexOf(card);
-    if(index>-1){
+
+  // remover do waste
+  let wIndex = state.waste.indexOf(card);
+  if(wIndex > -1){
+    state.waste.splice(wIndex,1);
+    return;
+  }
+
+  // remover do tableau
+  for(let pile of state.tableau){
+    let index = pile.indexOf(card);
+    if(index > -1){
       pile.splice(index,1);
-      if(pile.length && !pile[pile.length-1].faceUp)
-        pile[pile.length-1].faceUp=true;
-      break;
+
+      if(pile.length && !pile[pile.length-1].faceUp){
+        pile[pile.length-1].faceUp = true;
+      }
+      return;
     }
   }
 }
@@ -177,3 +188,4 @@ function startTimer(){
 }
 
 newGame();
+
