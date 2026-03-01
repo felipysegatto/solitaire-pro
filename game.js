@@ -1,217 +1,179 @@
 const suits=["♠","♥","♦","♣"];
 const values=["A","2","3","4","5","6","7","8","9","10","J","Q","K"];
 
-let deck=[];
-let tableaus=[];
-let foundations=[[],[],[],[]];
-let stock=[];
-let waste=[];
-let score=0;
-let startTime;
+let state;
 let drawMode=1;
+let timerInterval;
+let startTime;
 
-const game=document.getElementById("game");
+document.getElementById("drawModeBtn").onclick=()=>{
+  drawMode = drawMode===1?3:1;
+  document.getElementById("drawModeBtn").innerText="Modo: "+drawMode;
+};
+
+function newGame(){
+  state={
+    stock:[],
+    waste:[],
+    tableau:[[],[],[],[],[],[],[]],
+    foundation:[[],[],[],[]],
+    score:0
+  };
+
+  createDeck();
+  shuffle(state.stock);
+  deal();
+  startTimer();
+  render();
+}
 
 function createDeck(){
-  deck=[];
   suits.forEach(s=>{
     values.forEach((v,i)=>{
-      deck.push({
+      state.stock.push({
         suit:s,
         value:v,
         rank:i+1,
-        color:(s==="♥"||s==="♦")?"red":"black"
+        color:(s==="♥"||s==="♦")?"red":"black",
+        faceUp:false
       });
     });
   });
 }
 
-function shuffle(){
-  deck.sort(()=>Math.random()-0.5);
+function shuffle(array){
+  for(let i=array.length-1;i>0;i--){
+    const j=Math.floor(Math.random()*(i+1));
+    [array[i],array[j]]=[array[j],array[i]];
+  }
 }
 
-function startGame(){
-  score=0;
-  document.getElementById("score").innerText=0;
-  startTime=Date.now();
-  document.getElementById("victoryScreen").classList.add("hidden");
-
-  game.innerHTML="";
-  foundations=[[],[],[],[]];
-  tableaus=[[],[],[],[],[],[],[]];
-  stock=[];
-  waste=[];
-
-  createDeck();
-  shuffle();
-
+function deal(){
   for(let i=0;i<7;i++){
     for(let j=0;j<=i;j++){
-      let card=deck.pop();
-      card.faceUp=(j===i);
-      tableaus[i].push(card);
+      let card=state.stock.pop();
+      if(j===i) card.faceUp=true;
+      state.tableau[i].push(card);
     }
   }
+}
 
-  stock=[...deck];
+function drawCards(){
+  for(let i=0;i<drawMode;i++){
+    if(state.stock.length===0){
+      state.stock = state.waste.reverse().map(c=>({...c,faceUp:false}));
+      state.waste=[];
+      return;
+    }
+    let card=state.stock.pop();
+    card.faceUp=true;
+    state.waste.push(card);
+  }
   render();
 }
 
-function render(){
-  game.innerHTML="";
-  
-  const topRow=document.createElement("div");
-  topRow.style.display="flex";
-  topRow.style.gap="20px";
+function validTableauMove(card,target){
+  if(target.length===0) return card.rank===13;
+  let top=target[target.length-1];
+  return card.color!==top.color && card.rank===top.rank-1;
+}
 
-  const stockDiv=createPile();
-  stockDiv.onclick=drawCard;
+function validFoundationMove(card,target){
+  if(target.length===0) return card.rank===1;
+  let top=target[target.length-1];
+  return card.suit===top.suit && card.rank===top.rank+1;
+}
+
+function autoMove(card){
+  for(let f of state.foundation){
+    if(validFoundationMove(card,f)){
+      f.push(card);
+      removeCard(card);
+      state.score+=10;
+      checkWin();
+      return true;
+    }
+  }
+  return false;
+}
+
+function removeCard(card){
+  for(let pile of [...state.tableau,state.waste]){
+    let index=pile.indexOf(card);
+    if(index>-1){
+      pile.splice(index,1);
+      if(pile.length && !pile[pile.length-1].faceUp)
+        pile[pile.length-1].faceUp=true;
+      break;
+    }
+  }
+}
+
+function checkWin(){
+  if(state.foundation.every(f=>f.length===13)){
+    document.getElementById("victory").classList.remove("hidden");
+  }
+}
+
+function render(){
+  const game=document.getElementById("game");
+  game.innerHTML="";
+
+  const topRow=document.createElement("div");
+  topRow.className="row";
+
+  const stockDiv=createPile(state.stock,true);
+  stockDiv.onclick=drawCards;
   topRow.appendChild(stockDiv);
 
-  const wasteDiv=createPile();
-  if(waste.length){
-    wasteDiv.appendChild(createCard(waste[waste.length-1]));
-  }
-  topRow.appendChild(wasteDiv);
-
+  topRow.appendChild(createPile(state.waste));
   topRow.appendChild(document.createElement("div")).style.flex=1;
 
-  foundations.forEach((f,i)=>{
-    const fDiv=createPile();
-    if(f.length){
-      fDiv.appendChild(createCard(f[f.length-1]));
-    }
-    topRow.appendChild(fDiv);
+  state.foundation.forEach(f=>{
+    topRow.appendChild(createPile(f));
   });
 
   game.appendChild(topRow);
 
   const bottomRow=document.createElement("div");
-  bottomRow.style.display="flex";
-  bottomRow.style.gap="20px";
-  bottomRow.style.marginTop="30px";
+  bottomRow.className="row";
 
-  tableaus.forEach((pile,i)=>{
-    const tDiv=createPile();
-    pile.forEach((card,index)=>{
-      const el=createCard(card);
-      el.style.position="relative";
-      el.style.top=(index*25)+"px";
-      tDiv.appendChild(el);
-    });
-    bottomRow.appendChild(tDiv);
+  state.tableau.forEach(t=>{
+    bottomRow.appendChild(createPile(t));
   });
 
   game.appendChild(bottomRow);
 
-  checkWin();
+  document.getElementById("score").innerText=state.score;
 }
 
-function createPile(){
+function createPile(pile,isStock=false){
   const div=document.createElement("div");
-  div.style.width="90px";
-  div.style.height="130px";
-  div.style.borderRadius="10px";
-  div.style.background="rgba(255,255,255,0.1)";
-  return div;
-}
+  div.className="pile";
 
-function createCard(card){
-  const div=document.createElement("div");
-  div.style.width="90px";
-  div.style.height="130px";
-  div.style.borderRadius="10px";
-  div.style.background="white";
-  div.style.boxShadow="0 4px 10px rgba(0,0,0,0.4)";
-  div.style.display="flex";
-  div.style.flexDirection="column";
-  div.style.justifyContent="space-between";
-  div.style.padding="8px";
-  div.style.fontWeight="bold";
-  div.style.color=card.color==="red"?"#c62828":"#111";
-
-  if(!card.faceUp){
-    div.style.background="linear-gradient(135deg,#1e3c72,#2a5298)";
-    return div;
-  }
-
-  div.innerHTML=`<div>${card.value}${card.suit}</div>
-                 <div style="align-self:flex-end">${card.value}${card.suit}</div>`;
-
-  div.ondblclick=()=>autoMove(card);
-
-  return div;
-}
-
-function drawCard(){
-  if(stock.length===0){
-    stock=[...waste.reverse()];
-    waste=[];
-    render();
-    return;
-  }
-
-  for(let i=0;i<drawMode;i++){
-    if(stock.length){
-      let c=stock.pop();
-      c.faceUp=true;
-      waste.push(c);
+  pile.forEach((card,i)=>{
+    const el=document.createElement("div");
+    el.className="card "+(card.faceUp?card.color:"back");
+    el.style.top=(i*25)+"px";
+    if(card.faceUp){
+      el.innerText=card.value+card.suit;
+      el.ondblclick=()=>{ autoMove(card); render(); };
     }
-  }
-
-  render();
-}
-
-function autoMove(card){
-  for(let i=0;i<4;i++){
-    let f=foundations[i];
-    if(f.length===0 && card.rank===1){
-      f.push(card);
-      removeCard(card);
-      score+=10;
-      render();
-      return;
-    }
-    if(f.length && f[f.length-1].suit===card.suit && card.rank===f[f.length-1].rank+1){
-      f.push(card);
-      removeCard(card);
-      score+=10;
-      render();
-      return;
-    }
-  }
-}
-
-function removeCard(card){
-  tableaus.forEach(p=>{
-    let index=p.indexOf(card);
-    if(index>-1){
-      p.splice(index,1);
-      if(p.length && !p[p.length-1].faceUp){
-        p[p.length-1].faceUp=true;
-      }
-    }
+    div.appendChild(el);
   });
 
-  let wIndex=waste.indexOf(card);
-  if(wIndex>-1) waste.splice(wIndex,1);
+  return div;
 }
 
-function checkWin(){
-  if(foundations.every(f=>f.length===13)){
-    winGame();
-  }
+function startTimer(){
+  clearInterval(timerInterval);
+  startTime=Date.now();
+  timerInterval=setInterval(()=>{
+    let t=Math.floor((Date.now()-startTime)/1000);
+    let m=String(Math.floor(t/60)).padStart(2,"0");
+    let s=String(t%60).padStart(2,"0");
+    document.getElementById("timer").innerText=m+":"+s;
+  },1000);
 }
 
-function winGame(){
-  document.getElementById("victoryScreen").classList.remove("hidden");
-}
-
-document.getElementById("drawModeBtn").onclick=()=>{
-  drawMode=drawMode===1?3:1;
-  document.getElementById("drawModeBtn").innerText="Modo: "+drawMode+" Carta(s)";
-};
-
-document.getElementById("newGameBtn").onclick=startGame;
-
-startGame();
+newGame();
