@@ -203,9 +203,6 @@ function createPile(pile,isStock=false,isFoundation=false){
   return div;
 }
 
-  return div;
-}
-
 function startTimer(){
   clearInterval(timerInterval);
   startTime=Date.now();
@@ -218,6 +215,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
