@@ -55,8 +55,12 @@ header{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.9);
-  display:flex;
   flex-direction:column;
   justify-content:center;
   align-items:center;
 }
+
+#victory:not(.hidden){
+  display:flex;
+}
+
