@@ -3,7 +3,6 @@ body{
   font-family:Segoe UI;
   background:#0b5e2e;
   color:white;
-  overflow:hidden;
 }
 
 header{
@@ -12,22 +11,47 @@ header{
   padding:10px 20px;
 }
 
-button{
-  padding:6px 10px;
-  border:none;
-  border-radius:6px;
-  cursor:pointer;
-}
-
 #game{
   padding:20px;
+}
+
+.row{
+  display:flex;
+  gap:12px;
+  margin-bottom:20px;
+}
+
+.pile{
+  width:90px;
+  min-height:130px;
+  position:relative;
+}
+
+.card{
+  width:90px;
+  height:130px;
+  border-radius:8px;
+  background:white;
+  position:absolute;
+  padding:6px;
+  font-weight:bold;
+  box-shadow:0 4px 8px rgba(0,0,0,0.4);
+  cursor:pointer;
+  user-select:none;
+}
+
+.red{color:#c62828;}
+.black{color:#111;}
+
+.back{
+  background:#1e3c72;
 }
 
 .hidden{
   display:none;
 }
 
-#victoryScreen{
+#victory{
   position:fixed;
   inset:0;
   background:rgba(0,0,0,0.9);
@@ -35,10 +59,4 @@ button{
   flex-direction:column;
   justify-content:center;
   align-items:center;
-}
-
-canvas{
-  position:fixed;
-  inset:0;
-  pointer-events:none;
 }
