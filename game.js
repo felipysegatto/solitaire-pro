@@ -14,7 +14,7 @@ document.getElementById("drawModeBtn").onclick=()=>{
 function newGame(){
 
   // esconder tela de vitória
-  document.getElementById("victory").classList.add("hidden");
+  document.getElementById("victory").style.display = "none";
 
   state={
     stock:[],
@@ -199,5 +199,6 @@ function startTimer(){
 }
 
 newGame();
+
 
 
