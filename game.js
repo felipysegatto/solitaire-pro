@@ -136,7 +136,7 @@ function render(){
   const topRow=document.createElement("div");
   topRow.className="row";
 
-  const stockDiv=createPile(state.stock,true);
+  const stockDiv=createPile(state.stock,true,false);
   stockDiv.onclick=drawCards;
   topRow.appendChild(stockDiv);
 
@@ -144,8 +144,8 @@ function render(){
   topRow.appendChild(document.createElement("div")).style.flex=1;
 
   state.foundation.forEach(f=>{
-    topRow.appendChild(createPile(f));
-  });
+  topRow.appendChild(createPile(f,false,true));
+});
 
   game.appendChild(topRow);
 
@@ -218,6 +218,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
