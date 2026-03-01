@@ -5,9 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Solitaire Pro</title>
 <link rel="stylesheet" href="style.css">
-<link rel="manifest" href="manifest.json">
 </head>
-
 <body>
 
 <header>
@@ -16,20 +14,17 @@
     ⏱ <span id="timer">00:00</span>
   </div>
   <div>
-    <button id="drawModeBtn">Modo: 1 Carta</button>
-    <button id="newGameBtn">Novo</button>
+    <button id="drawModeBtn">Modo: 1</button>
+    <button onclick="newGame()">Novo Jogo</button>
   </div>
 </header>
 
 <div id="game"></div>
 
-<div id="victoryScreen" class="hidden">
+<div id="victory" class="hidden">
   <h1>🏆 Você venceu!</h1>
-  <p id="statsText"></p>
-  <button onclick="startGame()">Jogar novamente</button>
+  <button onclick="newGame()">Jogar novamente</button>
 </div>
-
-<canvas id="confetti"></canvas>
 
 <script src="game.js"></script>
 </body>
