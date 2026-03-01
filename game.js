@@ -161,20 +161,47 @@ function render(){
   document.getElementById("score").innerText=state.score;
 }
 
-function createPile(pile,isStock=false){
+function createPile(pile,isStock=false,isFoundation=false){
+
   const div=document.createElement("div");
   div.className="pile";
 
   pile.forEach((card,i)=>{
+
     const el=document.createElement("div");
     el.className="card "+(card.faceUp?card.color:"back");
-    el.style.top=(i*25)+"px";
+
+    // STOCK e FOUNDATION não descem
+    if(isStock || isFoundation){
+      el.style.top="0px";
+    }else{
+      el.style.top=(i*25)+"px";
+    }
+
     if(card.faceUp){
       el.innerText=card.value+card.suit;
-      el.ondblclick=()=>{ autoMove(card); render(); };
+
+      // DUPLO CLIQUE → auto mover
+      el.ondblclick=()=>{
+        if(autoMove(card)){
+          render();
+        }
+      };
+
+      // BOTÃO DIREITO → mover para foundation
+      el.oncontextmenu=(e)=>{
+        e.preventDefault();
+        if(autoMove(card)){
+          render();
+        }
+      };
     }
+
     div.appendChild(el);
   });
+
+  return div;
+}
 
   return div;
 }
@@ -191,6 +218,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
