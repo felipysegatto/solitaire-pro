@@ -12,6 +12,10 @@ document.getElementById("drawModeBtn").onclick=()=>{
 };
 
 function newGame(){
+
+  // esconder tela de vitória
+  document.getElementById("victory").classList.add("hidden");
+
   state={
     stock:[],
     waste:[],
@@ -19,6 +23,13 @@ function newGame(){
     foundation:[[],[],[],[]],
     score:0
   };
+
+  createDeck();
+  shuffle(state.stock);
+  deal();
+  startTimer();
+  render();
+}
 
   createDeck();
   shuffle(state.stock);
@@ -188,4 +199,5 @@ function startTimer(){
 }
 
 newGame();
+
 
