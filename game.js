@@ -75,7 +75,19 @@ function startConfetti(){
   draw();
 }
 
-startGame();
+function startGame(){
+  score=0;
+  document.getElementById("score").innerText=score;
+  startTime=Date.now();
+  document.getElementById("victoryScreen").classList.add("hidden");
+
+  // Limpa confetti
+  const canvas=document.getElementById("confetti");
+  const ctx=canvas.getContext("2d");
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  // IMPORTANTE: não chamar winGame aqui
+}
 
 /* Registrar service worker */
 if("serviceWorker" in navigator){
