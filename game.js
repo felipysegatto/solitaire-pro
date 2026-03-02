@@ -193,7 +193,7 @@ function createPile(pile,isStock=false,isFoundation=false){
     if(isStock || isFoundation){
       el.style.top="0px";
     }else{
-      el.style.top=(i*25)+"px";
+      el.style.top=(i*32)+"px";
     }
 
     if(card.faceUp){
@@ -233,6 +233,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
