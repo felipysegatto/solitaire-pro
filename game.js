@@ -107,6 +107,7 @@ function autoMove(card){
       // impedir mover Ás duplicado
       if(card.rank === 1 && f.length > 0) continue;
 
+      card.faceUp = true;
       f.push(card);
       removeCard(card);
       state.score+=10;
@@ -181,6 +182,9 @@ function render(){
 
 function createPile(pile,isStock=false,isFoundation=false){
 
+  el.style.transition="top 0.25s ease, transform 0.2s ease";
+  
+
   const div=document.createElement("div");
   div.className="pile";
 
@@ -233,6 +237,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
