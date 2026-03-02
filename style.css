@@ -1,8 +1,25 @@
 body{
   margin:0;
   font-family:Segoe UI;
-  background: radial-gradient(circle at center, #0f7a3e 0%, #0b5e2e 60%, #083d1d 100%);
+  background:
+    radial-gradient(circle at 30% 30%, #1f8f4d 0%, #146b38 40%, #0d4d28 100%);
+  background-blend-mode: multiply;
   color:white;
+}
+
+body::before{
+  content:"";
+  position:fixed;
+  inset:0;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      rgba(255,255,255,0.02),
+      rgba(255,255,255,0.02) 2px,
+      transparent 2px,
+      transparent 4px
+    );
+  pointer-events:none;
 }
 
 header{
@@ -32,19 +49,28 @@ header{
 }
 
 .card{
-  width:90px;
-  height:130px;
-  border-radius:10px;
-  background: linear-gradient(145deg, #ffffff, #e6e6e6);
+  width:100px;
+  height:140px;
+  border-radius:14px;
+  background:
+    linear-gradient(145deg, #ffffff, #e8e8e8);
   position:absolute;
-  padding:8px;
+  padding:10px;
   font-weight:bold;
   box-shadow:
-    0 6px 12px rgba(0,0,0,0.4),
-    inset 0 0 3px rgba(0,0,0,0.2);
+    0 8px 16px rgba(0,0,0,0.45),
+    inset 0 0 6px rgba(0,0,0,0.15);
   cursor:pointer;
   user-select:none;
-  transition:transform 0.15s ease, box-shadow 0.15s ease;
+  transition:
+    transform 0.25s cubic-bezier(.2,.8,.2,1),
+    box-shadow 0.25s ease,
+    top 0.25s ease,
+    left 0.25s ease;
+}
+
+.card:hover{
+  transform:translateY(-6px);
 }
 
 .red{color:#c62828;}
@@ -52,13 +78,16 @@ header{
 
 .back{
   background:
-    repeating-linear-gradient(
-      45deg,
-      #1e3c72,
-      #1e3c72 10px,
-      #274b8a 10px,
-      #274b8a 20px
-    );
+    radial-gradient(circle at 30% 30%, #3f7bd9, #274b8a 60%, #1b2e57 100%);
+  border:2px solid rgba(255,255,255,0.4);
+}
+
+.back::after{
+  content:"";
+  position:absolute;
+  inset:8px;
+  border-radius:10px;
+  border:1px solid rgba(255,255,255,0.3);
 }
 
 .hidden{
@@ -77,6 +106,7 @@ header{
 #victory:not(.hidden){
   display:flex;
 }
+
 
 
 
