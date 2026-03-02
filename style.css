@@ -1,7 +1,7 @@
 body{
   margin:0;
   font-family:Segoe UI;
-  background:#0b5e2e;
+  background: radial-gradient(circle at center, #0f7a3e 0%, #0b5e2e 60%, #083d1d 100%);
   color:white;
 }
 
@@ -12,13 +12,13 @@ header{
 }
 
 #game{
-  padding:20px;
+  padding:40px;
+  max-width:1200px;
+  margin:0 auto;
 }
 
 .row{
   display:flex;
-  gap:28px;
-  justify-content:center;
 }
 
 .pile{
@@ -30,21 +30,31 @@ header{
 .card{
   width:90px;
   height:130px;
-  border-radius:8px;
-  background:white;
+  border-radius:10px;
+  background: linear-gradient(145deg, #ffffff, #e6e6e6);
   position:absolute;
-  padding:6px;
+  padding:8px;
   font-weight:bold;
-  box-shadow:0 4px 8px rgba(0,0,0,0.4);
+  box-shadow:
+    0 6px 12px rgba(0,0,0,0.4),
+    inset 0 0 3px rgba(0,0,0,0.2);
   cursor:pointer;
   user-select:none;
+  transition:transform 0.15s ease, box-shadow 0.15s ease;
 }
 
 .red{color:#c62828;}
 .black{color:#111;}
 
 .back{
-  background:#1e3c72;
+  background:
+    repeating-linear-gradient(
+      45deg,
+      #1e3c72,
+      #1e3c72 10px,
+      #274b8a 10px,
+      #274b8a 20px
+    );
 }
 
 .hidden{
@@ -63,5 +73,6 @@ header{
 #victory:not(.hidden){
   display:flex;
 }
+
 
 
