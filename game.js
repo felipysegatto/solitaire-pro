@@ -82,14 +82,31 @@ function validTableauMove(card,target){
 }
 
 function validFoundationMove(card,target){
-  if(target.length===0) return card.rank===1;
-  let top=target[target.length-1];
-  return card.suit===top.suit && card.rank===top.rank+1;
+
+  // Se vazio → só pode Ás
+  if(target.length===0){
+    return card.rank===1;
+  }
+
+  const firstSuit = target[0].suit;
+  const top = target[target.length-1];
+
+  // Só mesmo naipe
+  if(card.suit !== firstSuit) return false;
+
+  // Sequência correta
+  return card.rank === top.rank + 1;
 }
 
 function autoMove(card){
+
   for(let f of state.foundation){
+
     if(validFoundationMove(card,f)){
+
+      // impedir mover Ás duplicado
+      if(card.rank === 1 && f.length > 0) continue;
+
       f.push(card);
       removeCard(card);
       state.score+=10;
@@ -97,6 +114,7 @@ function autoMove(card){
       return true;
     }
   }
+
   return false;
 }
 
@@ -215,6 +233,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
