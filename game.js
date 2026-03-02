@@ -160,7 +160,10 @@ function render(){
   topRow.appendChild(stockDiv);
 
   topRow.appendChild(createPile(state.waste));
-  topRow.appendChild(document.createElement("div")).style.flex=1;
+  
+  const spacer=document.createElement("div");
+spacer.style.flex=1;
+topRow.appendChild(spacer);
 
   state.foundation.forEach(f=>{
   topRow.appendChild(createPile(f,false,true));
@@ -182,7 +185,7 @@ function render(){
 
 function createPile(pile,isStock=false,isFoundation=false){
 
-  el.style.transition="top 0.25s ease, transform 0.2s ease";
+
   
 
   const div=document.createElement("div");
@@ -237,6 +240,7 @@ function startTimer(){
 }
 
 newGame();
+
 
 
 
